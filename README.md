@@ -43,6 +43,12 @@ source $ISSM_DIR/etc/environment.sh
 Now you can configure and install ISSM. 
 
 ```
+cd $ISSM_DIR
+autoreconf -ivf 
+mv configure_backup.txt configure
+```
+
+```
  ./configure \
     --prefix="$ISSM_DIR" \
     --disable-static \
