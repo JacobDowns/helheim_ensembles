@@ -90,3 +90,29 @@ qs = zeros(md.mesh.numberofvertices + 1, size(runoff_ts,2)) + qs;
 md.frontalforcings.meltingrate = (sqrt((m_max-m_min)^2 * qs) + m_min);
 md.frontalforcings.meltingrate(end,:) = runoff_ts;
 ```
+
+Set the ice temperatue based on the ice temperatue offset. Once temperature is adjusted the ice rheology is changed to reflect that temperature. The initial ice rheology with the baseline temperature is saved for future reference. 
+
+```
+% Ice temperature
+B0 = paterson(md.initialization.temperature);
+md.initialization.temperature = min(md.initialization.temperature + p2, 273.15);
+B1 = paterson(md.initialization.temperature);
+md.materials.rheology_B = B1; 
+```
+
+Next, we define a spatially and temporally varying stress threshold parameter field. The calving stress thresholds are adjusted. 
+
+```
+sigma_max = p3 * (paterson(273.15) ./ B0);
+sigma_min = sigma_max*p4;
+sigma_max(end+1) = 0;
+sigma_min(end+1) = 0;
+indicator = zeros(md.mesh.numberofvertices + 1, size(ts,2)) + sequence;
+size(indicator)
+md.calving.stress_threshold_floatingice = indicator.*(sigma_max - sigma_min) + sigma_min;
+size(md.calving.stress_threshold_floatingice)
+md.calving.stress_threshold_floatingice(end,:) = ts;
+md.calving.stress_threshold_groundedice = md.calving.stress_threshold_floatingice;
+```
+```
