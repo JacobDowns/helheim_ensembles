@@ -81,7 +81,7 @@ md.timestepping.final_time = 2050;
 md.settings.output_frequency = 10;
 ```
 
-Set time series of submarine melt, parameterized interms of `m_max` and `m_min`. In ISSM this takes the form a huge
+Set time series of submarine melt, parameterized interms of `m_max` and `m_min`. In ISSM this takes the form a huge $N+1 \times K$ array where $N$ is the number of nodes in the FEM mesh and $K$ is the number time steps at which the runoff is defined. The last row in the array contains the times at which runoff is defined. ISSM will interpolate runoff between given time steps. In this case there is no spatial variation in melt rate, so every mesh node is set to the same value. 
 
 ```
 m_max = p0;
