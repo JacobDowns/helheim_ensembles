@@ -101,10 +101,20 @@ B1 = paterson(md.initialization.temperature);
 md.materials.rheology_B = B1; 
 ```
 
-Next, we define a spatially and temporally varying stress threshold parameter field. The calving stress thresholds are adjusted. 
+Next, we define a spatially and temporally varying stress threshold parameter field. The von Mises calving law is given by 
+
+$$
+c = ||v|| \frac{ \sqrt{3} B \tilde{\epsilon_e}^{1/n}}{\sigma_{max}}
+$$
+
+which depends on the ice softness $B$ that depends on the temperature offset used in the model. To negate the direct impact of ice temperature on calving, we multiply the ice calving stress threshold parameter by a factor that divides out the ice rheology term and mulitplies by a standardized value corresponding to 0C. 
 
 ```
 sigma_max = p3 * (paterson(273.15) ./ B0);
+```
+
+There are two calving stress threshold terms for floating and grounded ice. We set both of these to the same values. 
+```
 sigma_min = sigma_max*p4;
 sigma_max(end+1) = 0;
 sigma_min(end+1) = 0;
@@ -114,5 +124,4 @@ md.calving.stress_threshold_floatingice = indicator.*(sigma_max - sigma_min) + s
 size(md.calving.stress_threshold_floatingice)
 md.calving.stress_threshold_floatingice(end,:) = ts;
 md.calving.stress_threshold_groundedice = md.calving.stress_threshold_floatingice;
-```
 ```
