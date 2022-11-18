@@ -125,3 +125,18 @@ size(md.calving.stress_threshold_floatingice)
 md.calving.stress_threshold_floatingice(end,:) = ts;
 md.calving.stress_threshold_groundedice = md.calving.stress_threshold_floatingice;
 ```
+
+The remainder of the code is simply the code to run the model. 
+
+```
+% Solve
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+md.miscellaneous.name = ['param_', num2str(i)];
+md.transient.isthermal = 0;
+md.transient.requested_outputs={'default', 'IceVolume', 'CalvingCalvingrate', 'IceVolumeAboveFloatation','IceVolumeAboveFloatationScaled','GroundedArea','FloatingArea','GroundedAreaScaled','FloatingAreaScaled','IceMass'};
+
+md.cluster=generic('name',oshostname, 'np', 3);
+md=solve(md,'Transient','runtimename',false);
+save(strcat('results_',  int2str(i), '.mat'), 'md', '-v7.3')
+```
